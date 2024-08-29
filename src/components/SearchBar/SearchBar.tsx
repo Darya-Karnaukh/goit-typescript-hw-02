@@ -1,9 +1,13 @@
 import { Field, Form, Formik } from "formik";
 import { toast, Toaster } from "react-hot-toast";
-
-const SearchBar = ({ onSubmit }) => {
+import { SearchFormSubmitHandler } from "../../Types/types";
+import s from "../SearchBar/SearchBar.module.css";
+interface SearchBarProps {
+  onSubmit: SearchFormSubmitHandler;
+}
+const SearchBar: React.FC<SearchBarProps> = ({ onSubmit }) => {
   return (
-    <header>
+    <header className={s.header}>
       <div>
         <Toaster position="top-right" reverseOrder={false} />
       </div>
@@ -18,15 +22,18 @@ const SearchBar = ({ onSubmit }) => {
         }}
       >
         {() => (
-          <Form>
+          <Form className={s.form}>
             <Field
+              className={s.input}
               name="input"
               type="text"
               autoComplete="off"
               autoFocus
               placeholder="Search images and photos"
             />
-            <button type="submit">Search</button>
+            <button className={s.btn} type="submit">
+              Search
+            </button>
           </Form>
         )}
       </Formik>

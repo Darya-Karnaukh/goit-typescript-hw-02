@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./App.css";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import SearchBar from "./components/SearchBar/SearchBar";
 import Loader from "./components/Loader/Loader";
@@ -7,15 +6,16 @@ import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
 import { fetchImages } from "./service/api";
 import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
 import ImageModal from "./components/ImageModal/ImageModal";
+import { Results, SearchFormSubmitHandler } from "./Types/types";
 
 const App = () => {
-  const [results, setResults] = useState([]);
-  const [query, setQuery] = useState("");
-  const [loader, setLoader] = useState(false);
-  const [error, setError] = useState(false);
-  const [nextPage, setNextPage] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [results, setResults] = useState<Results[]>([]);
+  const [query, setQuery] = useState<string>("");
+  const [loader, setLoader] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [nextPage, setNextPage] = useState<number>(1);
+  const [selectedImage, setSelectedImage] = useState<Results | null>(null);
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -23,10 +23,11 @@ const App = () => {
       setLoader(true);
       setError(false);
       try {
-        const images = await fetchImages(query);
+        const images: Results[] = await fetchImages(query);
         setResults(images);
         setNextPage(2);
-      } catch (error) {
+      } catch (error: unknown) {
+        console.error("Error fetching images:", error);
         setError(true);
       } finally {
         setLoader(false);
@@ -36,7 +37,7 @@ const App = () => {
     getData();
   }, [query]);
 
-  const onSubmit = (values, actions) => {
+  const onSubmit: SearchFormSubmitHandler = (values, actions) => {
     setQuery(values.input);
     actions.resetForm();
   };
@@ -44,7 +45,7 @@ const App = () => {
   const clickBtnLoadMore = async () => {
     try {
       setLoader(true);
-      const data = await fetchImages(query, nextPage);
+      const data: Results[] = await fetchImages(query, nextPage);
       setResults((prev) => [...prev, ...data]);
       setNextPage((prev) => prev + 1);
     } catch {
@@ -54,7 +55,7 @@ const App = () => {
     }
   };
 
-  const openModal = (image) => {
+  const openModal = (image: Results) => {
     setSelectedImage(image);
     setModalIsOpen(true);
   };
