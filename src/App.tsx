@@ -27,7 +27,11 @@ const App = () => {
         setResults(images);
         setNextPage(2);
       } catch (error: unknown) {
-        console.error("Error fetching images:", error);
+        if (error instanceof Error) {
+          console.error("Error fetching images:", error.message);
+        } else {
+          console.error("Unknown error occurred");
+        }
         setError(true);
       } finally {
         setLoader(false);
